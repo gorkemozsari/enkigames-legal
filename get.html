@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Persona Taboo</title>
+    <meta name="description" content="Guess the word and the hidden persona. Free on Google Play." />
+
+    <!--
+      A LANDING PAGE WHOSE ONLY JOB IS TO SURVIVE INSTAGRAM.
+
+      Instagram would not open a play.google.com link from either a story sticker
+      or the profile Links field, so the store cannot be linked directly. This
+      page is an ordinary web page on an ordinary domain, which is the one thing
+      Instagram reliably opens, and it puts the store one tap away.
+
+      WHY GITHUB PAGES AND NOT personataboo.onrender.com. Render's free instance
+      sleeps after 15 minutes idle and takes about 50 seconds to wake. Somebody
+      arriving from a story will not wait 50 seconds at a blank screen. Pages is
+      static and answered in 0.41s when this was written, cold or not.
+
+      ⚠️ SELF-CONTAINED ON PURPOSE. No webfont, no framework, no image files.
+      Every byte is in this file, so it paints on the first round trip. Do not
+      "improve" it by adding a font link or an icon set: this page is a
+      redirector that has to load before somebody loses interest, and the app's
+      real design lives in the app.
+
+      Colours are the app's own, from client/src/index.css.
+    -->
+    <style>
+      :root {
+        --ground: #0e0c0b;
+        --cream: #f7efe6;
+        --ink: #17120e;
+        --flame: #ff6b00;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        background: var(--ground);
+        color: var(--cream);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        /* Long German compounds and a 2x font scale must not widen the page. */
+        overflow-wrap: break-word;
+        hyphens: auto;
+      }
+      main { width: 100%; max-width: 420px; text-align: center; }
+      .mark {
+        color: var(--flame);
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        font-size: 14px;
+        margin: 0 0 28px;
+      }
+      h1 { font-size: 34px; line-height: 1.15; margin: 0 0 14px; }
+      p.sub { color: #b9ada2; font-size: 17px; line-height: 1.45; margin: 0 0 34px; }
+      /* The sticker skin: flat fill, thick ink outline, hard offset shadow. */
+      .cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: var(--flame);
+        color: var(--ink);
+        border: 3px solid var(--ink);
+        border-radius: 16px;
+        box-shadow: 6px 6px 0 var(--ink);
+        padding: 18px 20px;
+        font-size: 19px;
+        font-weight: 800;
+        text-decoration: none;
+        min-height: 44px; /* a real tap target */
+      }
+      .cta:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--ink); }
+      .alt {
+        display: inline-block;
+        margin-top: 26px;
+        color: #b9ada2;
+        font-size: 15px;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      svg { flex: 0 0 auto; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="mark">PERSONA TABOO</p>
+      <h1 id="head">Guess the word and the hidden persona.</h1>
+      <p class="sub" id="sub">Free, and you can play with friends.</p>
+
+      <a class="cta" id="cta" href="https://play.google.com/store/apps/details?id=com.enkigames.personataboo">
+        <!--
+          Inline so there is no icon font to fetch.
+          ⚠️ This is the real Google Play mark, four quadrants meeting at the
+          fold, NOT a plain triangle. The first attempt was a hand-drawn
+          approximation and read as wrong at a glance, which is worse than no
+          icon on a button whose whole job is to say "this is the Play Store".
+        -->
+        <svg width="22" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087z"/>
+          <path fill="currentColor" d="M13.544 10.989l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179z"/>
+          <path fill="currentColor" d="M13.544 13.056l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54z"/>
+          <path fill="currentColor" d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594z"/>
+        </svg>
+        <span id="ctaText">Get it on Google Play</span>
+      </a>
+
+      <br />
+      <a class="alt" id="alt" href="https://personataboo.onrender.com">Or play in your browser</a>
+    </main>
+
+    <script>
+      // Three languages, chosen from the browser rather than asked for. Somebody
+      // arriving from a story will not pick a language before deciding whether
+      // to care, so the page has to already be in theirs.
+      //
+      // ⚠️ The English copy lives in the HTML above, NOT here, so the page still
+      // reads correctly if this script never runs at all.
+      //
+      // ⚠️ ?lang=tr FORCES A LANGUAGE. Two reasons it exists. It is the only way
+      // to actually CHECK that the translations work, since you cannot see other
+      // people's browser settings and an English phone correctly shows English,
+      // which is indistinguishable from detection being broken. And it lets a
+      // Turkish post link straight to the Turkish page rather than hoping.
+      //
+      // ⚠️ navigator.languageS first, then .language. The array is the user's
+      // ordered preference list and the singular is only its first entry, which
+      // some in-app browsers do not set at all.
+      var COPY = {
+        tr: {
+          head: 'Gizli kelimeyi ve gizli karakteri tahmin et.',
+          sub: 'Ücretsiz, arkadaşlarınla oynanır.',
+          cta: 'Google Play’den indir',
+          alt: 'Ya da tarayıcıda oyna'
+        },
+        de: {
+          head: 'Errate das Wort und die verborgene Figur.',
+          sub: 'Kostenlos, und mit Freunden spielbar.',
+          cta: 'Bei Google Play laden',
+          alt: 'Oder im Browser spielen'
+        }
+      };
+
+      function pickLang() {
+        try {
+          var forced = new URLSearchParams(location.search).get('lang');
+          if (forced) return forced.slice(0, 2).toLowerCase();
+        } catch (e) { /* very old browser, fall through */ }
+        var list = (navigator.languages && navigator.languages.length)
+          ? navigator.languages
+          : [navigator.language || navigator.userLanguage || 'en'];
+        for (var i = 0; i < list.length; i++) {
+          var code = String(list[i] || '').slice(0, 2).toLowerCase();
+          if (COPY[code]) return code;
+        }
+        return 'en';
+      }
+
+      function apply(code) {
+        var c = COPY[code];
+        if (!c) return 'en';               // English is already in the HTML
+        document.documentElement.lang = code;
+        document.getElementById('head').textContent = c.head;
+        document.getElementById('sub').textContent = c.sub;
+        document.getElementById('ctaText').textContent = c.cta;
+        document.getElementById('alt').textContent = c.alt;
+        return code;
+      }
+
+      try {
+        window.__lang = apply(pickLang());
+      } catch (e) {
+        /* Leave the English already in the HTML. */
+      }
+    </script>
+  </body>
+</html>
